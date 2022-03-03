@@ -47,7 +47,16 @@ public class BlogHandler {
                             if (diff < 18) {
                                 return ServerResponse.status(HttpStatus.PRECONDITION_REQUIRED).build();
                             } else {
-                                return ServerResponse.ok().body(blogService.save(blog), Blog.class);
+                                return blogService.findAll()
+                                        .filter(blog1 -> blog1.getAuthorId().equals(blog.getAuthorId()))
+                                        .collectList()
+                                        .flatMap(blogs -> {
+                                            if (blogs.size() > 3) {
+                                                return ServerResponse.status(HttpStatus.PRECONDITION_FAILED).build();
+                                            } else {
+                                                return ServerResponse.ok().body(blogService.save(blog), Blog.class);
+                                            }
+                                        });
                             }
                         })
                 );
