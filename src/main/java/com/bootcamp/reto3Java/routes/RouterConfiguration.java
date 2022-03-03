@@ -74,4 +74,16 @@ public class RouterConfiguration {
                         .andRoute(RequestPredicates.PATCH("/{id}"), commentHandler::updateById)
         );
     }
+
+    @Bean
+    public RouterFunction<ServerResponse> reactionRoutes (ReactionHandler reactionHandler) {
+        return RouterFunctions.nest(RequestPredicates.path("/reactions"),
+                RouterFunctions
+                        .route(RequestPredicates.GET(""), reactionHandler::findAll)
+                        .andRoute(RequestPredicates.POST(""), reactionHandler::save)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), reactionHandler::delete)
+                        .andRoute(RequestPredicates.GET("/{id}"), reactionHandler::findById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), reactionHandler::updateById)
+        );
+    }
 }
