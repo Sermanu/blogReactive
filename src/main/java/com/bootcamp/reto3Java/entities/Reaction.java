@@ -21,4 +21,5 @@ public class Reaction {
     private String type;
     private Date date;
     private String userId;
+    private String postId;
 }
