@@ -1,7 +1,13 @@
 package com.bootcamp.reto3Java.handlers;
 
 import com.bootcamp.reto3Java.entities.Author;
+import com.bootcamp.reto3Java.entities.Blog;
+import com.bootcamp.reto3Java.entities.Comment;
+import com.bootcamp.reto3Java.entities.Post;
 import com.bootcamp.reto3Java.services.AuthorService;
+import com.bootcamp.reto3Java.services.BlogService;
+import com.bootcamp.reto3Java.services.CommentService;
+import com.bootcamp.reto3Java.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.stereotype.Component;
@@ -14,6 +20,15 @@ public class AuthorHandler {
 
     @Autowired
     private AuthorService authorService;
+
+    @Autowired
+    private BlogService blogService;
+
+    @Autowired
+    private PostService postService;
+
+    @Autowired
+    private CommentService commentService;
 
     public Mono<ServerResponse> findAll(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
@@ -32,7 +47,41 @@ public class AuthorHandler {
     public Mono<ServerResponse> delete(ServerRequest request) {
         String authorId = request.pathVariable("id");
         return authorService.findById(authorId)
-                .flatMap(author -> authorService.delete(author).then(ServerResponse.noContent().build()))
+                .flatMap(author -> {
+                    authorService.delete(author);
+                    blogService
+                            .findAll()
+                            .filter(blog -> blog.getAuthorId().equals(authorId))
+                            .collectList()
+                            .flatMap(blogs -> {
+                                for (Blog blogItem : blogs) {
+                                    String blogId = blogItem.getId();
+                                    postService
+                                            .findAll()
+                                            .filter(post -> post.getBlogId().equals(blogId))
+                                            .collectList()
+                                            .flatMap(posts -> {
+                                                for (Post postItem : posts) {
+                                                    String postId = postItem.getId();
+                                                    commentService.findAll()
+                                                            .filter(comment -> comment.getPostId().equals(postId))
+                                                            .collectList()
+                                                            .flatMap(comments -> {
+                                                                for (Comment commentItem : comments) {
+                                                                    commentService.delete(commentItem);
+                                                                }
+                                                                return ServerResponse.noContent().build();
+                                                            });
+                                                    postService.delete(postItem);
+                                                }
+                                                return ServerResponse.noContent().build();
+                                            });
+                                    blogService.delete(blogItem);
+                                }
+                                return ServerResponse.noContent().build();
+                            });
+                return ServerResponse.noContent().build();
+                })
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
