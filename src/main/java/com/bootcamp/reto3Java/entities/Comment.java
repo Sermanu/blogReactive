@@ -22,4 +22,5 @@ public class Comment {
     private String estado;
     private String comment;
     private String userId;
+    private String postId;
 }

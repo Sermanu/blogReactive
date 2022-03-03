@@ -1,9 +1,6 @@
 package com.bootcamp.reto3Java.routes;
 
-import com.bootcamp.reto3Java.handlers.AuthorHandler;
-import com.bootcamp.reto3Java.handlers.BlogHandler;
-import com.bootcamp.reto3Java.handlers.PostHandler;
-import com.bootcamp.reto3Java.handlers.UserHandler;
+import com.bootcamp.reto3Java.handlers.*;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.reactive.function.server.RequestPredicates;
@@ -63,6 +60,18 @@ public class RouterConfiguration {
                         .andRoute(RequestPredicates.GET("/{id}"), postHandler::findById)
                         .andRoute(RequestPredicates.PATCH("/{id}"), postHandler::updateById)
                         .andRoute(RequestPredicates.POST("/public/{id}"), postHandler::publicate)
+        );
+    }
+
+    @Bean
+    public RouterFunction<ServerResponse> commentRoutes (CommentHandler commentHandler) {
+        return RouterFunctions.nest(RequestPredicates.path("/comments"),
+                RouterFunctions
+                        .route(RequestPredicates.GET(""), commentHandler::findAll)
+                        .andRoute(RequestPredicates.POST(""), commentHandler::save)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), commentHandler::delete)
+                        .andRoute(RequestPredicates.GET("/{id}"), commentHandler::findById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), commentHandler::updateById)
         );
     }
 }
