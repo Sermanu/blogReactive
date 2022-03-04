@@ -56,9 +56,9 @@ public class BlogServiceImpl implements BlogService {
     @Override
     public Mono<Blog> activateBlog(String id) {
         return blogRepository.findById(id)
-                .map(blog -> {
+                .flatMap(blog -> {
                     blog.setStatus("activo");
-                    return blog;
+                    return blogRepository.save(blog);
                 })
                 .switchIfEmpty(Mono.empty());
     }

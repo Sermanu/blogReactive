@@ -1,6 +1,7 @@
 package com.bootcamp.reto3Java.handlers;
 
 import com.bootcamp.reto3Java.entities.Post;
+import com.bootcamp.reto3Java.services.BlogService;
 import com.bootcamp.reto3Java.services.PostService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +20,9 @@ public class PostHandler {
     @Autowired
     private PostService postService;
 
+    @Autowired
+    private BlogService blogService;
+
     public Mono<ServerResponse> findAllPosts(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(postService.findAll(), Post.class);
@@ -27,6 +31,16 @@ public class PostHandler {
     public Mono<ServerResponse> savePost(ServerRequest request) {
 
         return request.bodyToMono(Post.class)
+                // Validacion de solo post en blog con estado activo
+                .flatMap(post -> blogService
+                        .findById(post.getBlogId())
+                        .flatMap(blog -> {
+                            if (blog.getStatus().equals("activo")) {
+                                return Mono.just(post);
+                            } else {
+                                return Mono.empty();
+                            }
+                        }))
                 // Validacion de un solo post de blog por dia
                 .flatMap(post ->
                         postService
@@ -58,11 +72,12 @@ public class PostHandler {
                                         if (canSavePost) {
                                             return ServerResponse.ok().body(postService.save(post), Post.class);
                                         } else {
-                                            return ServerResponse.status(HttpStatus.PRECONDITION_REQUIRED).build();
+                                            return ServerResponse.status(HttpStatus.PRECONDITION_FAILED).build();
                                         }
 
                                     }
-                                }));
+                                }))
+                .switchIfEmpty(ServerResponse.status(HttpStatus.PRECONDITION_REQUIRED).build());
     }
 
     public Mono<ServerResponse> deletePost(ServerRequest request) {
