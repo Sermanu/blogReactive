@@ -20,12 +20,12 @@ public class CommentHandler {
     @Autowired
     private PostService postService;
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAllComments(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(commentService.findAll(), Comment.class);
     }
 
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> saveComment(ServerRequest request) {
         return request.bodyToMono(Comment.class)
                 .flatMap(comment -> postService
                         .findById(comment.getPostId())
@@ -38,14 +38,14 @@ public class CommentHandler {
                         }));
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> deleteComment(ServerRequest request) {
         String commentId = request.pathVariable("id");
         return commentService.findById(commentId)
                 .flatMap(comment -> commentService.delete(comment).then(ServerResponse.noContent().build()))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findCommentById(ServerRequest request) {
         String commentId = request.pathVariable("id");
         return commentService
                 .findById(commentId)
@@ -53,7 +53,7 @@ public class CommentHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateById(ServerRequest request) {
+    public Mono<ServerResponse> updateCommentById(ServerRequest request) {
         String commentId = request.pathVariable("id");
         return request.bodyToMono(Comment.class)
                 .flatMap(commentRequest -> {

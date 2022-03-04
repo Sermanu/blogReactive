@@ -19,12 +19,12 @@ public class UserHandler {
     @Autowired
     private AuthorService authorService;
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAllUsers(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(userService.findAll(), User.class);
     }
 
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> saveUser(ServerRequest request) {
         return request.bodyToMono(User.class)
                 // Validacion de que solo exista un registro en users con el authorId
                 .flatMap(userRequest -> userService.findAll()
@@ -47,14 +47,14 @@ public class UserHandler {
                 .switchIfEmpty(ServerResponse.badRequest().build());
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> deleteUser(ServerRequest request) {
         String userId = request.pathVariable("id");
         return userService.findById(userId)
                 .flatMap(user -> userService.delete(user).then(ServerResponse.noContent().build())
                 .switchIfEmpty(ServerResponse.notFound().build()));
     }
 
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findUserById(ServerRequest request) {
         String userId = request.pathVariable("id");
         return userService
                 .findById(userId)
@@ -62,7 +62,7 @@ public class UserHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateById(ServerRequest request) {
+    public Mono<ServerResponse> updateUserById(ServerRequest request) {
         String userId = request.pathVariable("id");
         return request.bodyToMono(User.class)
                 .flatMap(userRequest -> {

@@ -15,11 +15,11 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> authorRoutes (AuthorHandler authorHandler) {
         return RouterFunctions.nest(RequestPredicates.path("/authors"),
                 RouterFunctions
-                        .route(RequestPredicates.GET(""), authorHandler::findAll)
-                        .andRoute(RequestPredicates.POST(""), authorHandler::save)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), authorHandler::delete)
-                        .andRoute(RequestPredicates.GET("/{id}"), authorHandler::findById)
-                        .andRoute(RequestPredicates.PATCH("/{id}"), authorHandler::updateById)
+                        .route(RequestPredicates.GET(""), authorHandler::findAllAuthors)
+                        .andRoute(RequestPredicates.POST(""), authorHandler::saveAuthor)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), authorHandler::deleteAuthor)
+                        .andRoute(RequestPredicates.GET("/{id}"), authorHandler::findAuthorById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), authorHandler::updateAuthorById)
         );
     }
 
@@ -27,11 +27,11 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> userRoutes (UserHandler userHandler) {
         return RouterFunctions.nest(RequestPredicates.path("/users"),
                 RouterFunctions
-                        .route(RequestPredicates.GET(""), userHandler::findAll)
-                        .andRoute(RequestPredicates.POST(""), userHandler::save)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), userHandler::delete)
-                        .andRoute(RequestPredicates.GET("/{id}"), userHandler::findById)
-                        .andRoute(RequestPredicates.PATCH("/{id}"), userHandler::updateById)
+                        .route(RequestPredicates.GET(""), userHandler::findAllUsers)
+                        .andRoute(RequestPredicates.POST(""), userHandler::saveUser)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), userHandler::deleteUser)
+                        .andRoute(RequestPredicates.GET("/{id}"), userHandler::findUserById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), userHandler::updateUserById)
                         .andRoute(RequestPredicates.POST("/login") , userHandler::logIn)
                         .andRoute(RequestPredicates.POST("/logoff") , userHandler::logOff)
         );
@@ -41,11 +41,11 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> blogRoutes (BlogHandler blogHandler) {
         return RouterFunctions.nest(RequestPredicates.path("/blogs"),
                 RouterFunctions
-                        .route(RequestPredicates.GET(""), blogHandler::findAll)
-                        .andRoute(RequestPredicates.POST(""), blogHandler::save)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), blogHandler::delete)
-                        .andRoute(RequestPredicates.GET("/{id}"), blogHandler::findById)
-                        .andRoute(RequestPredicates.PATCH("/{id}"), blogHandler::updateById)
+                        .route(RequestPredicates.GET(""), blogHandler::findAllBlogs)
+                        .andRoute(RequestPredicates.POST(""), blogHandler::saveBlog)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), blogHandler::deleteBlog)
+                        .andRoute(RequestPredicates.GET("/{id}"), blogHandler::findBlogById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), blogHandler::updateBlogById)
                         .andRoute(RequestPredicates.POST("/activate/{id}"), blogHandler::activate)
         );
     }
@@ -54,11 +54,11 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> postRoutes (PostHandler postHandler) {
         return RouterFunctions.nest(RequestPredicates.path("/posts"),
                 RouterFunctions
-                        .route(RequestPredicates.GET(""), postHandler::findAll)
-                        .andRoute(RequestPredicates.POST(""), postHandler::save)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), postHandler::delete)
-                        .andRoute(RequestPredicates.GET("/{id}"), postHandler::findById)
-                        .andRoute(RequestPredicates.PATCH("/{id}"), postHandler::updateById)
+                        .route(RequestPredicates.GET(""), postHandler::findAllPosts)
+                        .andRoute(RequestPredicates.POST(""), postHandler::savePost)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), postHandler::deletePost)
+                        .andRoute(RequestPredicates.GET("/{id}"), postHandler::findPostById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), postHandler::updatePostById)
                         .andRoute(RequestPredicates.POST("/public/{id}"), postHandler::publicate)
         );
     }
@@ -67,11 +67,11 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> commentRoutes (CommentHandler commentHandler) {
         return RouterFunctions.nest(RequestPredicates.path("/comments"),
                 RouterFunctions
-                        .route(RequestPredicates.GET(""), commentHandler::findAll)
-                        .andRoute(RequestPredicates.POST(""), commentHandler::save)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), commentHandler::delete)
-                        .andRoute(RequestPredicates.GET("/{id}"), commentHandler::findById)
-                        .andRoute(RequestPredicates.PATCH("/{id}"), commentHandler::updateById)
+                        .route(RequestPredicates.GET(""), commentHandler::findAllComments)
+                        .andRoute(RequestPredicates.POST(""), commentHandler::saveComment)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), commentHandler::deleteComment)
+                        .andRoute(RequestPredicates.GET("/{id}"), commentHandler::findCommentById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), commentHandler::updateCommentById)
         );
     }
 
@@ -79,11 +79,11 @@ public class RouterConfiguration {
     public RouterFunction<ServerResponse> reactionRoutes (ReactionHandler reactionHandler) {
         return RouterFunctions.nest(RequestPredicates.path("/reactions"),
                 RouterFunctions
-                        .route(RequestPredicates.GET(""), reactionHandler::findAll)
-                        .andRoute(RequestPredicates.POST(""), reactionHandler::save)
-                        .andRoute(RequestPredicates.DELETE("/{id}"), reactionHandler::delete)
-                        .andRoute(RequestPredicates.GET("/{id}"), reactionHandler::findById)
-                        .andRoute(RequestPredicates.PATCH("/{id}"), reactionHandler::updateById)
+                        .route(RequestPredicates.GET(""), reactionHandler::findAllReactions)
+                        .andRoute(RequestPredicates.POST(""), reactionHandler::saveReaction)
+                        .andRoute(RequestPredicates.DELETE("/{id}"), reactionHandler::deleteReaction)
+                        .andRoute(RequestPredicates.GET("/{id}"), reactionHandler::findReactionById)
+                        .andRoute(RequestPredicates.PATCH("/{id}"), reactionHandler::updateReactionById)
         );
     }
 }

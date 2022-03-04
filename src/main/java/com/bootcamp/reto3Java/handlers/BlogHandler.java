@@ -25,12 +25,12 @@ public class BlogHandler {
     @Autowired
     private AuthorService authorService;
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAllBlogs(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(blogService.findAll(), Blog.class);
     }
 
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> saveBlog(ServerRequest request) {
         return request.bodyToMono(Blog.class)
                 // Validacion de fecha del autor
                 .flatMap(blog ->
@@ -63,14 +63,14 @@ public class BlogHandler {
                 );
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> deleteBlog(ServerRequest request) {
         String blogId = request.pathVariable("id");
         return blogService.findById(blogId)
                 .flatMap(blog -> blogService.delete(blog).then(ServerResponse.noContent().build())
                 .switchIfEmpty(ServerResponse.notFound().build()));
     }
 
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findBlogById(ServerRequest request) {
         String blogId = request.pathVariable("id");
         return blogService
                 .findById(blogId)
@@ -78,7 +78,7 @@ public class BlogHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateById(ServerRequest request) {
+    public Mono<ServerResponse> updateBlogById(ServerRequest request) {
         String blogId = request.pathVariable("id");
         return request.bodyToMono(Blog.class)
                 .flatMap(blogRequest -> {

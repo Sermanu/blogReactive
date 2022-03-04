@@ -19,12 +19,12 @@ public class PostHandler {
     @Autowired
     private PostService postService;
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAllPosts(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(postService.findAll(), Post.class);
     }
 
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> savePost(ServerRequest request) {
 
         return request.bodyToMono(Post.class)
                 // Validacion de un solo post de blog por dia
@@ -65,14 +65,14 @@ public class PostHandler {
                                 }));
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> deletePost(ServerRequest request) {
         String postId = request.pathVariable("id");
         return postService.findById(postId)
                 .flatMap(post -> postService.delete(post).then(ServerResponse.noContent().build())
                         .switchIfEmpty(ServerResponse.notFound().build()));
     }
 
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findPostById(ServerRequest request) {
         String postId = request.pathVariable("id");
         return postService
                 .findById(postId)
@@ -80,7 +80,7 @@ public class PostHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateById(ServerRequest request) {
+    public Mono<ServerResponse> updatePostById(ServerRequest request) {
         String postId = request.pathVariable("id");
         return request.bodyToMono(Post.class)
                 .flatMap(postRequest -> {

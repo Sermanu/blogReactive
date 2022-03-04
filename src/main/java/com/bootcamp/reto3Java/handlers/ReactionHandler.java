@@ -17,12 +17,12 @@ public class ReactionHandler {
     @Autowired
     private ReactionService reactionService;
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAllReactions(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(reactionService.findAll(), Reaction.class);
     }
 
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> saveReaction(ServerRequest request) {
         return request.bodyToMono(Reaction.class)
                 .flatMap(reaction ->
                         reactionService
@@ -41,14 +41,14 @@ public class ReactionHandler {
                 );
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> deleteReaction(ServerRequest request) {
         String reactionId = request.pathVariable("id");
         return reactionService.findById(reactionId)
                 .flatMap(reaction -> reactionService.delete(reaction).then(ServerResponse.noContent().build()))
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findReactionById(ServerRequest request) {
         String reactionId = request.pathVariable("id");
         return reactionService
                 .findById(reactionId)
@@ -56,7 +56,7 @@ public class ReactionHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateById(ServerRequest request) {
+    public Mono<ServerResponse> updateReactionById(ServerRequest request) {
         String reactionId = request.pathVariable("id");
         return request.bodyToMono(Reaction.class)
                 .flatMap(reactionRequest -> {

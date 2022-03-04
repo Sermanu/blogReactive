@@ -30,12 +30,12 @@ public class AuthorHandler {
     @Autowired
     private CommentService commentService;
 
-    public Mono<ServerResponse> findAll(ServerRequest request) {
+    public Mono<ServerResponse> findAllAuthors(ServerRequest request) {
         return ServerResponse.ok().contentType(MediaType.APPLICATION_JSON)
                 .body(authorService.findAll(), Author.class);
     }
 
-    public Mono<ServerResponse> save(ServerRequest request) {
+    public Mono<ServerResponse> saveAuthor(ServerRequest request) {
         return request.bodyToMono(Author.class)
                 .flatMap(author -> authorService.save(author))
                 .flatMap(author -> ServerResponse.ok()
@@ -44,7 +44,7 @@ public class AuthorHandler {
                 .switchIfEmpty(ServerResponse.badRequest().build()));
     }
 
-    public Mono<ServerResponse> delete(ServerRequest request) {
+    public Mono<ServerResponse> deleteAuthor(ServerRequest request) {
         String authorId = request.pathVariable("id");
 
         return authorService.findById(authorId)
@@ -54,7 +54,7 @@ public class AuthorHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> findById(ServerRequest request) {
+    public Mono<ServerResponse> findAuthorById(ServerRequest request) {
         String authorId = request.pathVariable("id");
         return authorService
                 .findById(authorId)
@@ -62,7 +62,7 @@ public class AuthorHandler {
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
-    public Mono<ServerResponse> updateById(ServerRequest request) {
+    public Mono<ServerResponse> updateAuthorById(ServerRequest request) {
         String authorId = request.pathVariable("id");
         return request.bodyToMono(Author.class)
                 .flatMap(authorRequest -> {
