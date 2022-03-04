@@ -27,13 +27,13 @@ public class ReactionHandler {
                 .flatMap(reaction ->
                         reactionService
                                 .findAll()
-                                .filter(reaction1 -> reaction1.getUserId().equals(reaction.getUserId()))
+                                .filter(reactionFilter -> reactionFilter.getUserId().equals(reaction.getUserId()) && reactionFilter.getPostId().equals(reaction.getPostId()))
                                 .collectList()
                                 .flatMap(reactions -> {
                                     if (reactions.size() == 0) {
                                         return ServerResponse.ok()
                                                 .contentType(MediaType.APPLICATION_JSON)
-                                                .body(Mono.just(reaction), Reaction.class);
+                                                .body(reactionService.save(reaction), Reaction.class);
                                     } else {
                                         return ServerResponse.status(HttpStatus.PRECONDITION_FAILED).build();
                                     }
