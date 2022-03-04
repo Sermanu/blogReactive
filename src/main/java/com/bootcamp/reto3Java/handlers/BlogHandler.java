@@ -51,7 +51,7 @@ public class BlogHandler {
                                         .filter(blog1 -> blog1.getAuthorId().equals(blog.getAuthorId()))
                                         .collectList()
                                         .flatMap(blogs -> {
-                                            if (blogs.size() > 3) {
+                                            if (blogs.size() >= 3) {
                                                 return ServerResponse.status(HttpStatus.PRECONDITION_FAILED).build();
                                             } else {
                                                 return ServerResponse.ok().body(blogService.save(blog), Blog.class);
