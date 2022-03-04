@@ -21,6 +21,7 @@ public class ReactionServiceImpl implements ReactionService {
 
     @Override
     public Mono<Reaction> save(Reaction request) {
+        request.setType("like");
         return reactionRepository.save(request);
     }
 
