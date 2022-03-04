@@ -59,6 +59,7 @@ public class BlogHandler {
                                         });
                             }
                         })
+                        .switchIfEmpty(ServerResponse.notFound().build())
                 );
     }
 
