@@ -50,8 +50,8 @@ public class UserHandler {
     public Mono<ServerResponse> deleteUser(ServerRequest request) {
         String userId = request.pathVariable("id");
         return userService.findById(userId)
-                .flatMap(user -> userService.delete(user).then(ServerResponse.noContent().build())
-                .switchIfEmpty(ServerResponse.notFound().build()));
+                .flatMap(user -> userService.delete(user).then(ServerResponse.noContent().build()))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findUserById(ServerRequest request) {

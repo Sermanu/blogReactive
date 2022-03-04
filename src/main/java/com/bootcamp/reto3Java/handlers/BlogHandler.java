@@ -66,8 +66,8 @@ public class BlogHandler {
     public Mono<ServerResponse> deleteBlog(ServerRequest request) {
         String blogId = request.pathVariable("id");
         return blogService.findById(blogId)
-                .flatMap(blog -> blogService.delete(blog).then(ServerResponse.noContent().build())
-                .switchIfEmpty(ServerResponse.notFound().build()));
+                .flatMap(blog -> blogService.delete(blog).then(ServerResponse.noContent().build()))
+                .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findBlogById(ServerRequest request) {

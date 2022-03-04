@@ -84,8 +84,8 @@ public class PostHandler {
     public Mono<ServerResponse> deletePost(ServerRequest request) {
         String postId = request.pathVariable("id");
         return postService.findById(postId)
-                .flatMap(post -> postService.delete(post).then(ServerResponse.noContent().build())
-                        .switchIfEmpty(ServerResponse.notFound().build()));
+                .flatMap(post -> postService.delete(post).then(ServerResponse.noContent().build()))
+                        .switchIfEmpty(ServerResponse.notFound().build());
     }
 
     public Mono<ServerResponse> findPostById(ServerRequest request) {
