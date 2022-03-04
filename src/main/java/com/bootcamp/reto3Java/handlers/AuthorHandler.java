@@ -46,42 +46,11 @@ public class AuthorHandler {
 
     public Mono<ServerResponse> delete(ServerRequest request) {
         String authorId = request.pathVariable("id");
+
         return authorService.findById(authorId)
-                .flatMap(author -> {
-                    authorService.delete(author);
-                    blogService
-                            .findAll()
-                            .filter(blog -> blog.getAuthorId().equals(authorId))
-                            .collectList()
-                            .flatMap(blogs -> {
-                                for (Blog blogItem : blogs) {
-                                    String blogId = blogItem.getId();
-                                    postService
-                                            .findAll()
-                                            .filter(post -> post.getBlogId().equals(blogId))
-                                            .collectList()
-                                            .flatMap(posts -> {
-                                                for (Post postItem : posts) {
-                                                    String postId = postItem.getId();
-                                                    commentService.findAll()
-                                                            .filter(comment -> comment.getPostId().equals(postId))
-                                                            .collectList()
-                                                            .flatMap(comments -> {
-                                                                for (Comment commentItem : comments) {
-                                                                    commentService.delete(commentItem);
-                                                                }
-                                                                return ServerResponse.noContent().build();
-                                                            });
-                                                    postService.delete(postItem);
-                                                }
-                                                return ServerResponse.noContent().build();
-                                            });
-                                    blogService.delete(blogItem);
-                                }
-                                return ServerResponse.noContent().build();
-                            });
-                return ServerResponse.noContent().build();
-                })
+                .flatMap(author ->
+                    authorService.delete(author).then(ServerResponse.noContent().build())
+                )
                 .switchIfEmpty(ServerResponse.notFound().build());
     }
 
