@@ -57,9 +57,9 @@ public class PostServiceImpl implements PostService {
     @Override
     public Mono<Post> publicatePost(String id) {
         return postRepository.findById(id)
-                .map(post -> {
+                .flatMap(post -> {
                     post.setStatus("publicado");
-                    return post;
+                    return postRepository.save(post);
                 })
                 .switchIfEmpty(Mono.empty());
     }
