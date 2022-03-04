@@ -31,53 +31,54 @@ public class PostHandler {
     public Mono<ServerResponse> savePost(ServerRequest request) {
 
         return request.bodyToMono(Post.class)
-                // Validacion de solo post en blog con estado activo
+                // Buscar Blog asociado
                 .flatMap(post -> blogService
                         .findById(post.getBlogId())
                         .flatMap(blog -> {
+                            // Validacion de solo post en blog con estado activo
                             if (blog.getStatus().equals("activo")) {
-                                return Mono.just(post);
-                            } else {
-                                return Mono.empty();
-                            }
-                        }))
-                // Validacion de un solo post de blog por dia
-                .flatMap(post ->
-                        postService
-                                .findAll()
-                                .filter(postFilter -> postFilter.getBlogId().equals(post.getBlogId()))
-                                .collectList()
-                                .flatMap(posts -> {
-                                    if (posts.size() == 0) {
-                                        return ServerResponse.ok().body(postService.save(post), Post.class);
-                                    } else {
-                                        boolean canSavePost = true;
 
-                                        for (Post postItem : posts) {
+                                return postService
+                                        .findAll()
+                                        .filter(postFilter -> postFilter.getBlogId().equals(post.getBlogId()))
+                                        .collectList()
+                                        .flatMap(posts -> {
+                                            // Validacion de un solo post de blog por dia
+                                            if (posts.size() == 0) {
+                                                return ServerResponse.ok().body(postService.save(post), Post.class);
+                                            } else {
+                                                boolean canSavePost = true;
+
+                                                for (Post postItem : posts) {
 
 
-                                            Date dateOfPostSaved =postItem.getDate();
-                                            Date dateOfPostToSave = post.getDate();
+                                                    Date dateOfPostSaved =postItem.getDate();
+                                                    Date dateOfPostToSave = post.getDate();
 
-                                            long diffInMillies = Math.abs(dateOfPostToSave.getTime() - dateOfPostSaved.getTime());
-                                            long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
+                                                    long diffInMillies = Math.abs(dateOfPostToSave.getTime() - dateOfPostSaved.getTime());
+                                                    long diff = TimeUnit.DAYS.convert(diffInMillies, TimeUnit.MILLISECONDS);
 
-                                            if (diff < 1) {
-                                                canSavePost = false;
-                                                break;
+                                                    if (diff < 1) {
+                                                        canSavePost = false;
+                                                        break;
+                                                    }
+
+                                                }
+
+                                                if (canSavePost) {
+                                                    return ServerResponse.ok().body(postService.save(post), Post.class);
+                                                } else {
+                                                    return ServerResponse.status(HttpStatus.PRECONDITION_FAILED).build();
+                                                }
+
                                             }
+                                        });
+                            } else {
+                                return ServerResponse.status(HttpStatus.PRECONDITION_REQUIRED).build();
+                            }
+                        })
+                        .switchIfEmpty(ServerResponse.notFound().build()));
 
-                                        }
-
-                                        if (canSavePost) {
-                                            return ServerResponse.ok().body(postService.save(post), Post.class);
-                                        } else {
-                                            return ServerResponse.status(HttpStatus.PRECONDITION_FAILED).build();
-                                        }
-
-                                    }
-                                }))
-                .switchIfEmpty(ServerResponse.status(HttpStatus.PRECONDITION_REQUIRED).build());
     }
 
     public Mono<ServerResponse> deletePost(ServerRequest request) {
