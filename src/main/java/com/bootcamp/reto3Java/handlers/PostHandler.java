@@ -107,7 +107,7 @@ public class PostHandler {
 
     }
 
-    public Mono<ServerResponse> publicate(ServerRequest request) {
+    public Mono<ServerResponse> publish(ServerRequest request) {
         String postId = request.pathVariable("id");
         return postService.publicatePost(postId)
                 .flatMap(postPublicate -> ServerResponse.ok().body(Mono.just(postPublicate), Post.class))

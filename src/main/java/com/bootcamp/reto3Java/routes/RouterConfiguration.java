@@ -59,7 +59,7 @@ public class RouterConfiguration {
                         .andRoute(RequestPredicates.DELETE("/{id}"), postHandler::deletePost)
                         .andRoute(RequestPredicates.GET("/{id}"), postHandler::findPostById)
                         .andRoute(RequestPredicates.PATCH("/{id}"), postHandler::updatePostById)
-                        .andRoute(RequestPredicates.POST("/publicate/{id}"), postHandler::publicate)
+                        .andRoute(RequestPredicates.POST("/publish/{id}"), postHandler::publish)
         );
     }
 
